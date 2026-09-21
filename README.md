@@ -3,12 +3,12 @@ erDiagram
 
     users {
         int id PK
-        varchar fullname
-        varchar email UK
-        varchar password
-        varchar photo_profile
+        string fullname
+        string email UK
+        string password
+        string photo_profile
         text bio
-        varchar location
+        string location
         user_role role
         timestamp created_at
         timestamp updated_at
@@ -16,10 +16,10 @@ erDiagram
 
     events {
         int id PK
-        varchar title
+        string title
         text description
-        varchar image
-        varchar location
+        string image
+        string location
         int capacity
         timestamp created_at
         timestamp updated_at
@@ -37,8 +37,8 @@ erDiagram
 
     communities {
         int id PK
-        varchar name
-        varchar image
+        string name
+        string image
         text description
     }
 
@@ -50,7 +50,7 @@ erDiagram
 
     categories {
         int id PK
-        varchar name UK
+        string name UK
     }
 
     event_category {
@@ -75,8 +75,8 @@ erDiagram
 
     speakers {
         int id PK
-        varchar name
-        varchar role
+        string name
+        string role
     }
 
     event_speaker {
@@ -95,8 +95,8 @@ erDiagram
 
     notification {
         int id PK
-        varchar type
-        varchar title
+        string type
+        string title
         text message
         timestamp created_at
         boolean is_read
