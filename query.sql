@@ -1,5 +1,5 @@
 -- LOGN
-SELECT id, fullname, email, password
+SELECT id, fullname, email, photo_profile
 FROM users
 WHERE email = 'budi@eventhub.com' AND password = 'password123';
 
@@ -64,11 +64,11 @@ SELECT
     u.id AS organizer_id,
     u.fullname AS organizer_name,
     u.photo_profile AS organizer_photo, 
-    ARRAY_AGG(DISTINCT c.name) AS categories
+    STRING_AGG(DISTINCT c.name) AS categories
 FROM events e JOIN users u ON e.organizer_id = u.id
 LEFT JOIN event_category ec ON e.id = ec.event_id
 LEFT JOIN categories c ON ec.category_id = c.id
-WHERE e.id = $1
+WHERE e.id = 1
 GROUP BY e.id, u.id;
 
 -- JOIN EVENT 
@@ -91,6 +91,26 @@ SELECT events.id, events.title, events.location, events.image, events.date, even
 FROM user_event
 JOIN events ON user_event.event_id = events.id
 WHERE user_event.user_id = 7;
+
+-- Comunity Detail
+
+SELECT
+    c.id,
+    c.name,
+    c.image,
+    c.description,
+    ARRAY_AGG(DISTINCT cat.name) AS categories,
+    COUNT(DISTINCT uc.user_id) AS total_members
+FROM communities c
+JOIN community_category cc
+    ON c.id = cc.community_id
+JOIN categories cat
+    ON cc.category_id = cat.id
+JOIN user_community uc
+    ON c.id = uc.community_id
+WHERE c.id = 1
+GROUP BY
+    c.id;
 
 -- Join Community
 
