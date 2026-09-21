@@ -38,11 +38,11 @@ DELETE FROM user_community
 WHERE user_id = 10 AND community_id = 5;
 
 -- GET Popular communities
-SELECT communities.id, communities.name, communities.image, COUNT(user_community.user_id) AS total_members
+SELECT communities.id, communities.name, communities.image, COUNT(user_community.user_id) AS popular
 FROM communities
 LEFT JOIN user_community ON communities.id = user_community.user_id
 GROUP BY communities.id
-ORDER BY total_members DESC;
+ORDER BY popular DESC;
 
 -- GET Community Members
 SELECT users.id, users.fullname, users.photo_profile
