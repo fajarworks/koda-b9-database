@@ -4,8 +4,8 @@ FROM users
 WHERE email = 'budi@eventhub.com' AND password = 'password123';
 
 -- REGISTER
-INSERT INTO users(fullname,email, password)
-VALUES('carlos nainggolan', 'carlosantos@example.com','crlsnggln123');
+INSERT INTO users(fullname,email, password, role)
+VALUES('maruf', 'maruf@example.com','maruf123', 'organizer');
 
 -- Query search and filter
 -- Most Popular
@@ -92,6 +92,17 @@ FROM user_event
 JOIN events ON user_event.event_id = events.id
 WHERE user_event.user_id = 7;
 
+-- GET community list search & filter
+SELECT
+    c.id,
+    c.name,
+    c.image,
+    c.description
+FROM communities c
+JOIN community_category cc ON c.id = cc.community_id
+JOIN categories cat ON cc.category_id = cat.id
+WHERE cat.name = 'Web Development';
+
 -- Comunity Detail
 
 SELECT
@@ -157,6 +168,24 @@ SET password = 'jhon1234',
     updated_at = now()
 WHERE id = 1;
 
+-- Organizer dashboard
+
+SELECT
+
+    (
+        SELECT COUNT(*)
+        FROM events
+        WHERE organizer_id = 3
+    ) AS total_event_created,
+
+    (
+        SELECT COUNT(DISTINCT ue.user_id)
+        FROM user_event ue
+        JOIN events e
+            ON ue.event_id = e.id
+        WHERE e.organizer_id = 3
+    ) AS total_attendee_join;
+
 -- CREATE EVENT
 
 INSERT INTO events (
@@ -202,6 +231,7 @@ UPDATE events
         end_time = '15:00'
 WHERE id = 7;
 
+
 -- GET testimony
 SELECT testimonials.id, users.fullname, users.photo_profile, testimonials.message 
 FROM testimonials
@@ -220,5 +250,20 @@ SELECT
     is_read
 FROM notification
 WHERE user_id = 7;
+
+-- Admin Dashboard
+
+SELECT(
+    SELECT COUNT(*)
+    FROM users
+) AS total_users,
+(
+    SELECT COUNT(*)
+    FROM events
+)AS total_events,
+(
+    SELECT COUNT(*)
+    FROM communities
+)AS total_communities;
 
 
