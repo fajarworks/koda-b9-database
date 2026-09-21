@@ -7,6 +7,70 @@ WHERE email = 'budi@eventhub.com' AND password = 'password123';
 INSERT INTO users(fullname,email, password)
 VALUES('carlos nainggolan', 'carlosantos@example.com','crlsnggln123');
 
+-- Query search and filter
+-- Most Popular
+SELECT e.id, e.title, e.image, e.capacity ,e.location , e.date, e.start_time, e.end_time, c.name AS category, count(ue.user_id) AS most_popular
+FROM events e
+LEFT JOIN user_event ue ON e.id = ue.event_id
+JOIN users u ON ue.user_id = u.id
+JOIN event_category ec ON e.id = ec.event_id
+JOIN categories c ON ec.category_id = c.id
+WHERE lower(e.title) LIKE lower('%react%')
+AND c.name = 'Web Development'
+AND e.location = 'Bandung'
+GROUP BY e.id, c.name
+ORDER BY most_popular DESC;
+
+-- Upcoming
+SELECT e.id, e.title, e.image, e.capacity ,e.location , e.date, e.start_time, e.end_time, c.name AS category
+FROM events e
+LEFT JOIN user_event ue ON e.id = ue.event_id
+JOIN users u ON ue.user_id = u.id
+JOIN event_category ec ON e.id = ec.event_id
+JOIN categories c ON ec.category_id = c.id
+WHERE lower(e.title) LIKE lower('%react%') 
+AND c.name = 'Web Development'
+AND e.location = 'Bandung'
+AND e.date > now()
+ORDER BY e.date DESC;
+
+-- Almost full
+
+SELECT e.id, e.title, e.image, e.capacity ,e.location , e.date, e.start_time, e.end_time, c.name AS category, e.capacity - count(DISTINCT ue.user_id) AS almost_full
+FROM events e
+LEFT JOIN user_event ue ON e.id = ue.event_id
+JOIN users u ON ue.user_id = u.id
+JOIN event_category ec ON e.id = ec.event_id
+JOIN categories c ON ec.category_id = c.id
+WHERE lower(e.title) LIKE lower('%react%')
+AND c.name = 'Web Development'
+-- AND e.location = 'Jakarta'
+GROUP BY e.id, c.name
+ORDER BY almost_full ASC;
+
+-- Get Detail Event
+
+SELECT
+    e.id,
+    e.title,
+    e.description,
+    e.image,
+    e.location,
+    e.capacity,
+    e.date,
+    e.start_time,
+    e.end_time,
+
+    u.id AS organizer_id,
+    u.fullname AS organizer_name,
+    u.photo_profile AS organizer_photo, 
+    ARRAY_AGG(DISTINCT c.name) AS categories
+FROM events e JOIN users u ON e.organizer_id = u.id
+LEFT JOIN event_category ec ON e.id = ec.event_id
+LEFT JOIN categories c ON ec.category_id = c.id
+WHERE e.id = $1
+GROUP BY e.id, u.id;
+
 -- JOIN EVENT 
 INSERT INTO user_event (user_id, event_id)
 VALUES(1,2);
@@ -104,7 +168,7 @@ INSERT INTO speakers (
     name,
     role
 )
-VALUES('Budi Santoso', 'Fullstack engineer')
+VALUES('Budi Santoso', 'Fullstack engineer');
 
 -- EDIT EVENT
 
@@ -121,7 +185,7 @@ WHERE id = 7;
 -- GET testimony
 SELECT testimonials.id, users.fullname, users.photo_profile, testimonials.message 
 FROM testimonials
-JOIN users ON testimonials.user_id = users.id
+JOIN users ON testimonials.user_id = users.id;
 
 -- SET testimony
 INSERT into testimonials (user_id, message)
